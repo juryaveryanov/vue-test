@@ -28,16 +28,17 @@
         </div>
       </div>
       <AppInput
-        @update:input="changeSelectedPost({ key: 'title', value: $event })"
-        :value="post.title"
+        @update:model-value="changeSelectedPost({ key: 'title', value: $event })"
+        v-model="post.title"
         label="Title:"
       />
-      <AppInput
+      <AppTextarea
         class="EditPost-form-body"
-        @update:input="changeBody"
-        :value="post.body"
+        @update:model-value="changeSelectedPost({ key: 'body', value: event })"
+        v-model="post.body"
         type="textarea"
         label="Body:"
+        autosize
       />
     </form>
   </main>
@@ -46,14 +47,17 @@
 <script>
 import { mapActions, mapState, mapMutations, mapGetters } from 'vuex'
 import AppInput from '@/components/UI/AppInput'
+import AppTextarea from '@/components/UI/AppTextarea'
 import AppButton from '@/components/UI/AppButton'
-import AppPreloader from '@/components/UI/AppPreloader.vue'
+import AppPreloader from '@/components/UI/AppPreloader'
+
 export default {
   name: 'EditPost',
   components: {
     AppInput,
     AppButton,
-    AppPreloader
+    AppPreloader,
+    AppTextarea
   },
   methods: {
     ...mapMutations({
@@ -65,13 +69,7 @@ export default {
       getSelectedPost: 'posts/getSelectedPost',
       saveSelectedPost: 'posts/saveSelectedPost',
       publishPost: 'posts/publishPost'
-    }),
-    changeBody (event, textarea) {
-      this.changeSelectedPost({ key: 'body', value: event })
-      // Autosize
-      textarea.style.height = 'auto'
-      textarea.style.height = `${textarea.scrollHeight}px`
-    }
+    })
   },
   mounted () {
     if (this.post === null) {
@@ -120,6 +118,7 @@ export default {
       &:deep {
         > textarea {
           overflow: hidden;
+          height: auto;
         }
       }
     }

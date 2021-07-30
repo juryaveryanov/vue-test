@@ -1,9 +1,9 @@
 <template>
   <div class="SearchPosts">
     <AppInput
-      :value="searchQ"
+      v-model="searchQ"
       class="SearchPosts-input"
-      @update:input="setSearchTimeout"
+      @update:model-value="setSearchTimeout"
       type="search"
       placeholder="Start typing to search"
       aria-label="Search for Posts"
@@ -83,6 +83,9 @@ export default {
       opacity: 0;
       transition: opacity 0.25s ease-out;
     }
+  }
+  &-input {
+    margin-bottom: 0;
   }
 }
 </style>

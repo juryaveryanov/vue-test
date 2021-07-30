@@ -1,22 +1,21 @@
 <template>
-  <div class="AppInput">
-    <label class="AppInput-label" v-if="label" :for="uniqId">
+  <div class="AppTextarea">
+    <label class="AppTextarea-label" v-if="label" :for="uniqId">
       {{ label }}
     </label>
-    <input
+    <textarea
+      :id="uniqId"
+      ref="textarea"
       :value="modelValue"
       :placeholder="placeholder"
       @input="updateInput"
-      :id="uniqId"
-      :type="type"
-      :aria-label="ariaLabel"
     />
   </div>
 </template>
 
 <script>
 export default {
-  name: 'AppInput',
+  name: 'AppTextarea',
   data () {
     return {
       uniqId: Math.random().toString(36).substr(2, 9)
@@ -24,11 +23,7 @@ export default {
   },
   props: {
     modelValue: [String, Number],
-    type: {
-      validator (value) {
-        return ['text', 'search', 'number'].includes(value)
-      }
-    },
+    autosize: Boolean,
     label: String,
     ariaLabel: String,
     placeholder: String
@@ -36,17 +31,35 @@ export default {
   methods: {
     updateInput (event) {
       this.$emit('update:modelValue', event.target.value)
+      if (this.autosize) {
+        this.setHeight()
+      }
+    },
+    setHeight () {
+      const textarea = this.$refs.textarea
+      textarea.style.height = 'auto'
+      textarea.style.height = `${textarea.scrollHeight}px`
+    }
+  },
+  mounted () {
+    if (this.autosize) {
+      this.setHeight()
+      window.addEventListener('resize', this.setHeight)
     }
   }
 }
 </script>
 
 <style lang="scss">
-.AppInput {
+.AppTextarea {
   width: 100%;
   margin-bottom: 1.5rem;
-  > input {
+  > textarea {
     @include input-styles;
+    display: block;
+    height: 10rem;
+    resize: none;
+    width: 100%;
   }
   &-label {
     display: block;
